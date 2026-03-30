@@ -1,0 +1,113 @@
+DCMotor:
+  description: "Ontologia para motor DC controlado por driver PWM, incluindo propriedades e casos de teste típicos."
+  properties:
+    hasControlType:
+      type: string
+      description: "Tipo de controle do motor."
+      value: "PWM via driver"
+
+    hasRotationDirection:
+      type: array
+      description: "Direções de rotação suportadas pelo motor."
+      items:
+        type: string
+      value:
+        - horario
+        - anti-horario
+
+    hasRequiredPins:
+      type: array
+      description: "Pinos usados para controle do motor (PWM, direção, enable)."
+      items:
+        type: object
+        properties:
+          name:
+            type: string
+            description: "Nome do pino (ex: pwm, dir)."
+          pinType:
+            type: string
+            allowedValues:
+              - digital
+              - pwm
+          defaultPin:
+            type: string
+            description: "Pino padrão (ex: D3)."
+      value:
+        - name: "PWM"
+          pinType: "pwm"
+          defaultPin: "D3"
+        - name: "DIR"
+          pinType: "digital"
+          defaultPin: "D4"
+        - name: "ENABLE"
+          pinType: "digital"
+          defaultPin: "D5"
+
+    hasPowerSupply:
+      type: string
+      description: "Tensão de alimentação do motor."
+      value: "12V"
+
+    hasPlatform:
+      type: string
+      description: "Plataforma alvo para desenvolvimento."
+      value: "Arduino"
+
+    hasSpeedControlRange:
+      type: object
+      description: "Faixa de controle de velocidade via PWM."
+      properties:
+        minDutyCycle:
+          type: number
+          value: 0
+        maxDutyCycle:
+          type: number
+          value: 100
+
+    hasSpeedMeasurementSupported:
+      type: boolean
+      description: "Indica se a velocidade pode ser medida para teste."
+      value: true
+
+    hasLibraryDependency:
+      type: array
+      description: "Bibliotecas necessárias para utilizar o motor."
+      items:
+        - "Arduino.h"
+      value:
+        - "Arduino.h"
+
+    hasTypicalTestCases:
+      type: array
+      description: "Casos de teste típicos para o motor DC."
+      items:
+        type: string
+      value:
+        - "motor_ligado_sentido_horario"
+        - "motor_parada_imediata"
+        - "motor_giro_reverso"
+        - "teste_velocidade_minima"
+        - "teste_velocidade_maxima"
+
+    hasTestLibraries:
+      type: array
+      description: "Frameworks/bibliotecas de teste unitário compatíveis com Arduino."
+      items:
+        - library: "ArduinoUnit"
+          description: "Framework de teste unitário específico para Arduino."
+      value:
+        - library: "ArduinoUnit"
+          description: "Framework de teste unitário específico para Arduino."
+
+    hasLanguageDevelopment:
+      type: string
+      description: "Linguagem utilizada no desenvolvimento"
+      value: "C++"
+
+    hasTestMode:
+      type: string
+      description: "Seleciona o modo de execução dos testes"
+      allowedValues:
+        - "Sensor Físico"
+        - "Mock"
+      value: "Mock"

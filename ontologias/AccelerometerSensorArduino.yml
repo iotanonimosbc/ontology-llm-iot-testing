@@ -1,0 +1,45 @@
+MPU6050:
+  description: "Sensor acelerômetro e giroscópio 3 eixos, comum para Arduino, usando I2C."
+  properties:
+    hasPlatform:
+      type: string
+      value: "Arduino"
+
+    hasMeasurementUnit:
+      type: string
+      value: "m/s²"
+
+    hasAccelerationRange:
+      type: object
+      properties:
+        min: { type: number, value: -2.0 }
+        max: { type: number, value: 2.0 }
+
+    hasValidRange:
+      type: object
+      properties:
+        min: { type: number, value: -2.0 }
+        max: { type: number, value: 2.0 }
+
+    hasRequiredPins:
+      type: array
+      items:
+        - { name: "SDA", pinType: "digital", defaultPin: "A4" }
+        - { name: "SCL", pinType: "digital", defaultPin: "A5" }
+        - { name: "VCC", pinType: "digital", defaultPin: "3.3V/5V" }
+        - { name: "GND", pinType: "digital", defaultPin: "GND" }
+
+    hasMockLibrary:
+      type: object
+      properties:
+        libraryName: { type: string, value: "MPU6050Mock" }
+        simulateFunctions:
+          type: array
+          items:
+            - { functionName: "begin", behavior: "Não faz nada" }
+            - { functionName: "readX", behavior: "Retorna valores simulados X" }
+            - { functionName: "readY", behavior: "Retorna valores simulados Y" }
+            - { functionName: "readZ", behavior: "Retorna valores simulados Z" }
+        errorValue: { type: number, value: -999.0 }
+        range: { min: -2.0, max: 2.0 }
+        resolution: { type: number, value: 0.01 }

@@ -1,0 +1,242 @@
+DS18B20:
+  description: "Sensor de temperatura digital 1-Wire amplamente utilizado em sistemas IoT embarcados."
+
+  properties:
+
+    hasSignalType:
+      type: string
+      description: "Tipo lógico do sinal do sensor."
+      allowedValues:
+        - Digital
+      value: "Digital"
+
+
+    hasMeasurementUnit:
+      type: string
+      allowedValues: [ Celsius, Fahrenheit ]
+      value: "Celsius"
+
+    hasMinTemperature:
+      type: number
+      value: -55
+
+    hasMaxTemperature:
+      type: number
+      value: 125
+
+    hasResolution:
+      type: number
+      value: 0.0625
+
+
+    hasCommunicationProtocol:
+      type: string
+      value: "1-Wire"
+
+    hasPlatform:
+      type: string
+      value: "Arduino"
+
+    hasPowerSupply:
+      type: string
+      value: "3.0V - 5.5V"
+
+    hasErrorValue:
+      type: number
+      value: -127
+
+  
+    hasStableReadingThreshold:
+      type: number
+      value: 0.5
+
+    hasStableReadingDuration:
+      type: number
+      value: 5
+
+    hasPins:
+      type: string
+      allowedValues: [ 2, 10 ]
+      value: "10"
+
+    hasDependencies:
+      type: object
+      editable: false
+      value:
+        productionLibraries:
+          - name: "OneWire"
+          - name: "DallasTemperature"
+        testingLibraries:
+          - name: "AUnit"
+
+    hasHardwareInitialization:
+      type: object
+      description: "Inicialização estrutural de hardware (sem setup/loop)"
+      value:
+        constants:
+          - name: "DATA_PIN"
+            type: macro
+            value: 2
+
+        objects:
+          - name: "oneWire"
+            class: "OneWire"
+            constructor:
+              - "DATA_PIN"
+
+          - name: "sensors"
+            class: "DallasTemperature"
+            constructor:
+              - "&oneWire"
+
+    hasFunctionalInterface:
+      type: object
+      editable: false
+      value:
+        methods:
+          - name: "requestTemperatures"
+            returns: void
+          - name: "getTempCByIndex"
+            parameters:
+              - name: index
+                type: int
+            returns: float
+
+  testConfiguration:
+    testSuite: "DS18B20_AutomatedTests"
+    testFramework: "AUnit"
+
+    generationScope:
+      generateOnly:
+        - hardware_constants
+        - hardware_objects
+        - test_blocks
+      forbid:
+        - setup_function
+        - loop_function
+        - runner_invocation
+
+    generationPolicy:
+      assertionMapping:
+        true:   { kind: macro, name: assertTrue, namespace: none }
+        false:  { kind: macro, name: assertFalse, namespace: none }
+        equals: { kind: macro, name: assertEqual, namespace: none }
+        near:   { kind: macro, name: assertNear, namespace: none }
+
+  forbiddenCodePatterns:
+    - "class .*"
+    - "override"
+    - "setup\\s*\\("
+    - "loop\\s*\\("
+    - "TestRunner"
+    - "begin\\s*\\("
+    - "aunit::assert"
+
+  tests:
+    - id: "CT-FIS-01"
+      name: "leitura_valida"
+      steps:
+        - call: "requestTemperatures"
+        - wait: "750ms"
+        - call: "getTempCByIndex"
+          parameters:
+            index: 0
+      expected:
+        type: range
+        min: -55
+        max: 125
+
+    - id: "CT-FIS-02"
+      name: "sensor_desconectado"
+      steps:
+        - call: "requestTemperatures"
+        - wait: "750ms"
+        - call: "getTempCByIndex"
+          parameters:
+            index: 0
+      expected:
+        type: equals
+        value: -127
+        datatype: int
+
+    - id: "CT-FIS-03"
+      name: "faixa_negativa_temperatura"
+      steps:
+        - call: "requestTemperatures"
+        - wait: "750ms"
+        - call: "getTempCByIndex"
+          parameters:
+            index: 0
+      expected:
+        type: range
+        min: -55
+        max: 0
+
+    - id: "CT-FIS-04"
+      name: "faixa_positiva_temperatura"
+      steps:
+        - call: "requestTemperatures"
+        - wait: "750ms"
+        - call: "getTempCByIndex"
+          parameters:
+            index: 0
+      expected:
+        type: range
+        min: 0
+        max: 125
+
+    - id: "CT-FIS-05"
+      name: "leitura_estavel"
+      steps:
+        - repeat:
+            durationMinutes: 5
+            call: "getTempCByIndex"
+            parameters:
+              index: 0
+      expected:
+        type: tolerance
+        reference: 25.0
+        tolerance: 0.5
+
+    - id: "CT-MOCK-01"
+      name: "leitura_mock"
+      mode: "Mock"
+      mockInput:
+        temperature: 25.0
+      steps:
+        - call: "getTempCByIndex"
+          parameters:
+            index: 0
+      expected:
+        type: equals
+        value: 25.0
+
+    - id: "CT-MOCK-02"
+      name: "mock_dentro_intervalo"
+      mode: "Mock"
+      mockInput:
+        temperature: 25.0
+      steps:
+        - call: "getTempCByIndex"
+          parameters:
+            index: 0
+      expected:
+        type: range
+        min: 20
+        max: 30
+
+    - id: "CT-MOCK-03"
+      name: "sensor_simulado_desconectado"
+      mode: "Mock"
+      mockInput:
+        temperature: -127
+      steps:
+        - call: "getTempCByIndex"
+          parameters:
+            index: 0
+      expected:
+        type: equals
+        value: -127
+        datatype: int
+
+

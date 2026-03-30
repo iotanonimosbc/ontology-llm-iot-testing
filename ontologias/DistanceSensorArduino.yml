@@ -1,0 +1,100 @@
+DistanceSensor:
+  description: "Ontologia genérica para sensores de distância ultrassônicos, incluindo propriedades e casos de teste típicos."
+  properties:
+
+
+    hasMeasurementUnit:
+      type: string
+      description: "Unidade da medição de distância."
+      example: "cm"
+    hasOutputType:
+      type: string
+      description: "Tipo de saída do sensor (Digital ou Analog)."
+      allowedValues:
+        - Digital
+        - Analog
+    hasDistanceRange:
+      type: object
+      description: "Faixa mínima e máxima de distância suportada pelo sensor."
+      properties:
+        min:
+          type: number
+          example: 2
+        max:
+          type: number
+          example: 400
+    hasErrorValue:
+      type: number
+      description: "Valor indicativo de erro ou falha na leitura (ex: -1)."
+      optional: true
+    hasResolution:
+      type: number
+      description: "Resolução típica do sensor em centímetros."
+      optional: true
+    hasLibrary:
+      type: string
+      description: "Biblioteca usada para comunicação com o sensor (ex: NewPing, HC-SR04 Arduino)."
+      optional: true
+    hasMockSupport:
+      type: boolean
+      description: "Indica se a leitura pode ser simulada para testes."
+      example: true
+    hasRequiresInitialization:
+      type: boolean
+      description: "Se a biblioteca ou sensor precisa ser inicializado no código."
+      optional: true
+    hasValidRange:
+      type: object
+      description: "Intervalo típico válido para leituras de distância em testes."
+      properties:
+        min:
+          type: number
+          example: 2
+        max:
+          type: number
+          example: 400
+    hasTypicalTestCases:
+      type: array
+      description: "Lista de tipos comuns de casos de teste aplicáveis ao sensor de distância."
+      items:
+        type: string
+      example:
+        - sensor_conectado
+        - sensor_desconectado
+        - distancia_fixa
+        - distancia_maxima
+        - distancia_minima
+        - distancia_variavel
+        - reacao_ao_movimento
+    hasRequiredPins:
+      type: array
+      description: "Lista dos pinos usados pelo sensor."
+      items:
+        type: object
+        properties:
+          name:
+            type: string
+            description: "Nome do pino (ex: TRIGGER, ECHO)."
+          pinType:
+            type: string
+            allowedValues:
+              - digital
+              - analog
+          defaultPin:
+            type: string
+            description: "Pino padrão (ex: D7, D8)."
+    hasPowerSupply:
+      type: string
+      description: "Tensão de alimentação."
+      example: "5V"
+      optional: true
+    hasConnectionType:
+      type: string
+      description: "Tipo de conexão física (ex: digital)."
+      allowedValues:
+        - Digital
+        - Analog
+      optional: true
+    hasPlatform:
+      type: string
+      value: "Arduino"

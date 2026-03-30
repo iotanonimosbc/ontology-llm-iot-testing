@@ -1,0 +1,113 @@
+HCSR04:
+  description: "Ontologia para sensores ultrassônicos, incluindo propriedades e casos de teste típicos."
+  properties:
+    hasOutputType:
+      type: string
+      description: "Tipo de saída do sensor (geralmente digital: pulso echo)."
+      allowedValues:
+        - Digital
+      value: "Digital"
+
+    hasMeasurementUnit:
+      type: string
+      description: "Unidade de medida da distância."
+      value: "cm"
+
+    hasRequiredPins:
+      type: array
+      description: "Pinos usados pelo sensor (Trigger e Echo)."
+      items:
+        type: object
+        properties:
+          name:
+            type: string
+            description: "Nome do pino (Trigger ou Echo)."
+          pinType:
+            type: string
+            allowedValues:
+              - digital
+          defaultPin:
+            type: string
+            description: "Pino padrão (ex: D7, D8)"
+      value:
+        - name: "TRIGGER"
+          pinType: "digital"
+          defaultPin: "D7"
+        - name: "ECHO"
+          pinType: "digital"
+          defaultPin: "D8"
+
+    hasPowerSupply:
+      type: string
+      description: "Tensão de alimentação do sensor."
+      value: "5V"
+
+    hasPlatform:
+      type: string
+      value: "Arduino"
+
+    hasMaxDistance:
+      type: number
+      description: "Distância máxima de detecção suportada pelo sensor (cm)."
+      value: 400
+
+    hasMinDistance:
+      type: number
+      description: "Distância mínima de detecção suportada pelo sensor (cm)."
+      value: 2
+
+    hasSignalDebounceSupported:
+      type: boolean
+      description: "Indica se o sistema deve suportar debounce para evitar leituras erradas."
+      value: true
+
+    hasTestLibraries:
+      type: array
+      description: "Frameworks/bibliotecas de teste unitário compatíveis com Arduino."
+      items:
+        - library: "ArduinoUnit"
+          description: "Framework de teste unitário específico para Arduino."
+      value:
+        - library: "ArduinoUnit"
+          description: "Framework de teste unitário específico para Arduino."
+
+    hasLanguageDevelopment:
+      type: string
+      description: "Linguagem utilizada no desenvolvimento"
+      value: "C++"
+
+    hasTestMode:
+      type: string
+      description: "Seleciona o modo de execução dos testes"
+      allowedValues:
+        - "Sensor Físico"
+        - "Mock"
+      value: "Mock"
+
+    hasLibraryDependency:
+      type: array
+      description: "Bibliotecas necessárias para utilizar o sensor."
+      items:
+        - "Arduino.h"
+        - "HCSR04.h"
+      value:
+        - "Arduino.h"
+        - "HCSR04.h"
+
+    hasTypicalTestCases:
+      type: array
+      description: "Lista de casos de teste típicos aplicáveis ao sensor ultrassônico."
+      items:
+        - "testar_sensor_conectado"
+        - "medicao_distancia_estavel"
+        - "medicao_distancia_variavel"
+        - "testar_ausencia_objeto"
+        - "teste_interferencia"
+        - "teste_debounce_sinal"
+      value:
+        - "testar_sensor_conectado"
+        - "medicao_distancia_estavel"
+        - "medicao_distancia_variavel"
+        - "testar_ausencia_objeto"
+        - "teste_interferencia"
+        - "teste_debounce_sinal"

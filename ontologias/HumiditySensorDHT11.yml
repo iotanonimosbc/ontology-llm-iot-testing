@@ -1,0 +1,222 @@
+DHT11:
+  description: "Sensor digital de temperatura e umidade DHT11, amplamente utilizado em projetos Arduino."
+
+  properties:
+
+    # =========================
+    # Tipo de sinal
+    # =========================
+    hasSignalType:
+      type: string
+      description: "Tipo lógico do sinal do sensor."
+      allowedValues: [ Digital ]
+      value: "Digital"
+
+    # =========================
+    # Unidades e limites
+    # =========================
+    hasMeasurementUnit:
+      type: string
+      description: "Unidade principal de medição."
+      allowedValues: [ Celsius, Percentual ]
+      value: "Percentual"
+
+    # Temperatura
+    hasMinTemperature:
+      type: number
+      value: 0
+
+    hasMaxTemperature:
+      type: number
+      value: 50
+
+    # Umidade
+    hasMinHumidity:
+      type: number
+      value: 20
+
+    hasMaxHumidity:
+      type: number
+      value: 90
+
+    hasResolution:
+      type: number
+      description: "Resolução típica do sensor."
+      value: 1
+
+    # =========================
+    # Comunicação e plataforma
+    # =========================
+    hasCommunicationProtocol:
+      type: string
+      value: "Single-wire proprietary"
+
+    hasPlatform:
+      type: string
+      value: "Arduino"
+
+    hasPowerSupply:
+      type: string
+      value: "3.3V - 5V"
+
+    hasErrorValue:
+      type: number
+      value: -1
+
+    # =========================
+    # Estabilidade
+    # =========================
+    hasStableReadingThreshold:
+      type: number
+      value: 2
+
+    hasStableReadingDuration:
+      type: number
+      value: 5
+
+    # =========================
+    # Pinos
+    # =========================
+    hasPins:
+      type: string
+      allowedValues: [ 2, 10 ]
+      value: "2"
+
+    # =========================
+    # Dependências
+    # =========================
+    hasDependencies:
+      type: object
+      editable: false
+      value:
+        productionLibraries:
+          - name: "DHT sensor library"
+        testingLibraries:
+          - name: "AUnit"
+
+    # =========================
+    # Inicialização de hardware
+    # =========================
+    hasHardwareInitialization:
+      type: object
+      description: "Inicialização estrutural de hardware (sem setup/loop)"
+      value:
+        constants:
+          - name: "DHT_PIN"
+            type: macro
+            value: 2
+
+          - name: "DHT_TYPE"
+            type: macro
+            value: "DHT11"
+
+        objects:
+          - name: "dht"
+            class: "DHT"
+            constructor:
+              - "DHT_PIN"
+              - "DHT_TYPE"
+
+    # =========================
+    # Interface funcional
+    # =========================
+    hasFunctionalInterface:
+      type: object
+      editable: false
+      value:
+        methods:
+          - name: "readHumidity"
+            returns: float
+          - name: "readTemperature"
+            returns: float
+
+  # =========================
+  # Configuração de testes
+  # =========================
+  testConfiguration:
+    testSuite: "DHT11_AutomatedTests"
+    testFramework: "AUnit"
+
+    generationScope:
+      generateOnly:
+        - hardware_constants
+        - hardware_objects
+        - test_blocks
+      forbid:
+        - setup_function
+        - loop_function
+        - runner_invocation
+
+    generationPolicy:
+      assertionMapping:
+        equals: { kind: macro, name: assertEqual, namespace: none }
+        range:  { kind: macro, name: assertTrue, namespace: none }
+        near:   { kind: macro, name: assertNear, namespace: none }
+
+  forbiddenCodePatterns:
+    - "class .*"
+    - "override"
+    - "setup\\s*\\("
+    - "loop\\s*\\("
+    - "TestRunner"
+    - "begin\\s*\\("
+
+  # =========================
+  # Casos de teste
+  # =========================
+    - id: "CT-UMI-01"
+      name: "leitura_umidade_valida"
+      steps:
+        - call: "readHumidity"
+      expected:
+        type: range
+        min: 0
+        max: 100
+
+    - id: "CT-UMI-02"
+      name: "sensor_desconectado_umidade"
+      steps:
+        - call: "readHumidity"
+      expected:
+        type: equals
+        value: -1
+
+    - id: "CT-UMI-03"
+      name: "baixa_umidade"
+      steps:
+        - call: "readHumidity"
+      expected:
+        type: range
+        min: 0
+        max: 20
+
+    - id: "CT-UMI-04"
+      name: "alta_umidade"
+      steps:
+        - call: "readHumidity"
+      expected:
+        type: range
+        min: 90
+        max: 100
+
+    - id: "CT-UMI-05"
+      name: "estabilidade_umidade"
+      steps:
+        - repeat:
+            durationMinutes: 5
+            call: "readHumidity"
+      expected:
+        type: tolerance
+        reference: 50
+        tolerance: 0.5
+
+    - id: "CT-UMI-06"
+      name: "ruido_ou_oscilacao"
+      steps:
+        - repeat:
+            count: 100
+            call: "readHumidity"
+      expected:
+        type: tolerance
+        reference: 50
+        tolerance: 2

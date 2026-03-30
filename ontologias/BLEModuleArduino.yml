@@ -1,0 +1,101 @@
+BLEModuleIntegration:
+  description: "Ontologia para testes e integração de módulo BLE com Arduino, incluindo comunicação UART, reconexão e consumo energético."
+  properties:
+
+    hasPlatform:
+      type: string
+      value: "Arduino"
+    hasUARTConfiguration:
+      description: "Configurações da interface UART entre Arduino e módulo BLE."
+      parameters:
+        baudRate:
+          type: integer
+          example: 9600
+          description: "Velocidade de comunicação serial (baud rate)."
+        parity:
+          type: string
+          allowedValues: [None, Even, Odd]
+          example: None
+          description: "Paridade na comunicação UART."
+        stopBits:
+          type: integer
+          allowedValues: [1, 2]
+          example: 1
+          description: "Número de bits de parada na comunicação UART."
+      testCases:
+        - id: TC_UART_01
+          title: "Configurar parâmetros UART"
+          objective: "Verificar se os parâmetros UART são configurados corretamente no Arduino."
+          preConditions: "Módulo BLE conectado ao Arduino."
+          procedure:
+            - "Configurar baud rate, paridade e stop bits no código Arduino."
+            - "Iniciar comunicação serial."
+          expectedResult: "Comunicação UART ocorre com os parâmetros configurados, sem erros."
+          postConditions: "Comunicação UART estável."
+
+    hasTimeoutAndReconnection:
+      description: "Testes para timeout e reconexão automática do módulo BLE via Arduino."
+      testCases:
+        - id: TC_TIMEOUT_01
+          title: "Detecção de timeout na conexão BLE"
+          objective: "Verificar se o Arduino detecta perda de conexão por timeout."
+          preConditions: "Conexão BLE estabelecida."
+          procedure:
+            - "Interromper conexão BLE intencionalmente."
+            - "Monitorar mensagens e status no Arduino."
+          expectedResult: "Arduino detecta timeout e sinaliza erro de conexão."
+          postConditions: "Arduino pronto para tentar reconexão."
+        - id: TC_RECONNECTION_01
+          title: "Reconexão automática após perda de conexão"
+          objective: "Confirmar que Arduino tenta reconectar automaticamente ao módulo BLE."
+          preConditions: "Conexão BLE perdida (timeout ou desconexão)."
+          procedure:
+            - "Implementar lógica de reconexão no Arduino."
+            - "Observar tentativas e sucesso da reconexão."
+          expectedResult: "Reconexão é feita automaticamente, restabelecendo comunicação BLE."
+          postConditions: "Conexão BLE restabelecida."
+
+    hasPowerConsumption:
+      description: "Testes de consumo energético e modos de economia de energia do módulo BLE."
+      testCases:
+        - id: TC_POWER_01
+          title: "Verificar consumo em modo ativo"
+          objective: "Medir consumo energético do módulo BLE em operação normal."
+          preConditions: "Módulo BLE ligado e comunicando."
+          procedure:
+            - "Medir corrente elétrica consumida com equipamento apropriado."
+          expectedResult: "Consumo dentro do esperado para modo ativo."
+          postConditions: "Módulo em operação."
+        - id: TC_POWER_02
+          title: "Testar modo sleep e despertar do módulo"
+          objective: "Confirmar que o módulo entra em modo sleep para economia de energia e retorna ao modo ativo corretamente."
+          preConditions: "Módulo BLE com suporte a modos sleep."
+          procedure:
+            - "Enviar comando para colocar módulo em modo sleep."
+            - "Verificar redução de consumo."
+            - "Enviar comando para despertar módulo."
+            - "Confirmar retorno à operação normal."
+          expectedResult: "Modo sleep e wakeup funcionam corretamente, com redução e retomada do consumo."
+          postConditions: "Módulo ativo após despertar."
+
+    hasArduinoBLELibraryIntegration:
+      description: "Testes para integração com bibliotecas Arduino específicas para BLE."
+      testCases:
+        - id: TC_LIB_01
+          title: "Inicializar módulo com BLEPeripheral"
+          objective: "Testar inicialização e operação básica usando biblioteca BLEPeripheral."
+          preConditions: "Biblioteca BLEPeripheral instalada."
+          procedure:
+            - "Rodar exemplo básico da biblioteca."
+            - "Verificar inicialização e funcionamento."
+          expectedResult: "Módulo inicializa corretamente e responde aos comandos."
+          postConditions: "Módulo pronto para operação via BLEPeripheral."
+        - id: TC_LIB_02
+          title: "Inicializar módulo com BLEDevice"
+          objective: "Testar inicialização e operação básica usando biblioteca BLEDevice."
+          preConditions: "Biblioteca BLEDevice instalada."
+          procedure:
+            - "Rodar exemplo básico da biblioteca."
+            - "Verificar inicialização e funcionamento."
+          expectedResult: "Módulo inicializa corretamente e responde aos comandos."
+          postConditions: "Módulo pronto para operação via BLEDevice."

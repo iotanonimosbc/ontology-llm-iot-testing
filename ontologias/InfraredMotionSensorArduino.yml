@@ -1,0 +1,82 @@
+InfraredMotionSensor:
+  description: "Ontologia genérica para sensores infravermelhos de movimento, incluindo propriedades, bibliotecas de teste e casos típicos."
+  properties:
+    hasOutputType:
+      type: string
+      description: "Tipo de saída do sensor (geralmente digital)."
+      allowedValues:
+        - Digital
+        - Analog
+      value: "Digital"
+
+    hasSignalLevels:
+      type: string
+      description: "Níveis de sinal esperados do sensor."
+      allowedValues:
+        - "HIGH"
+        - "LOW"
+      value: "HIGH"
+
+
+    hasDebounceSupported:
+      type: boolean
+      description: "Indica se o sistema deve suportar debounce para filtrar oscilações."
+      value: true
+
+    hasOutputDelay:
+      type: number
+      description: "Tempo em segundos que a saída permanece ativa após detecção de movimento."
+      optional: true
+      value: 5
+
+    hasTypicalTestCases:
+      type: array
+      description: "Casos de teste típicos para este sensor."
+      items:
+        - "Verificar Sensor Conectado e Leitura Válida"
+        - "Verificar Sensor Desconectado"
+        - "Simular Movimento Detectado"
+        - "Simular Ausência de Movimento"
+        - "Testar Debounce do Sensor"
+        - "Testar Delay de Saída"
+        - "Leitura Estável sem Movimento"
+
+    hasTestLibraries:
+      description: "Frameworks/bibliotecas de teste unitário compatíveis com Arduino."
+      type: array
+      items:
+        - library: "ArduinoUnit"
+          description: "Framework de teste unitário específico para Arduino."
+
+    hasLanguageDevelopment:
+      description: "Linguagem utilizada no desenvolvimento."
+      type: string
+      value: "C++"
+
+    hasTestMode:
+      type: string
+      description: "Seleciona o modo de execução dos testes."
+      allowedValues:
+        - "Sensor Físico"
+        - "Mock"
+      value: "Mock"
+
+    hasPlatform:
+      type: string
+      value: "Arduino"
+
+
+    hasRequiredPins:
+      type: array
+      description: "Pinos usados pelo sensor (ex: sinal)."
+      items:
+        - name: "sinal"
+          pinType: "digital"
+          defaultPin: "D2"
+
+    hasPowerSupply:
+      type: string
+      description: "Tensão de alimentação do sensor."
+      value: "5V"
+
+
