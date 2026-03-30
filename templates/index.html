@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Escolher Ontologia</title>
+</head>
+<body>
+  <h1>Ontologias disponíveis</h1>
+  <ul>
+    {% for ont in ontologias %}
+      <li><a href="{{ url_for('formulario', ontologia=ont) }}">{{ ont }}</a></li>
+    {% endfor %}
+  </ul>
+</body>
+</html>

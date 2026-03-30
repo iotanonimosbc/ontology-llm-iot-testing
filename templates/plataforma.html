@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}{{ nome }}{% endblock %}
+
+{% block content %}
+<h1>Sensores da plataforma {{ nome }}</h1>
+
+<ul>
+{% for sensor in sensores %}
+    <li>
+        <a href="{{ url_for('formulario', sensor=sensor) }}">
+            {{ sensor }}
+        </a>
+    </li>
+{% else %}
+    <li>Nenhum sensor encontrado.</li>
+{% endfor %}
+</ul>
+
+<br>
+<a href="{{ url_for('home') }}">⬅ Voltar</a>
+{% endblock %}

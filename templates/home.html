@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Plataformas IoT{% endblock %}
+
+{% block content %}
+<h1>Plataformas disponíveis</h1>
+
+<ul>
+{% for plataforma, sensores in plataformas.items() %}
+    <li>
+        <a href="{{ url_for('ver_plataforma', nome=plataforma) }}">
+            {{ plataforma }}
+        </a>
+    </li>
+{% endfor %}
+</ul>
+{% endblock %}
